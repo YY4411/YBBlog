@@ -1,4 +1,6 @@
-{% extends "layout.html" %} {% block body %}
+{% extends "layout.html" %}
+
+{% block body %}
 
 <h3>Kontrol Paneli</h3>
 <small>Hoşgeldin, {{session["username"]}}</small>
@@ -6,6 +8,7 @@
 <a href="/addarticle" class="btn btn-danger">Makale Ekle</a>
 
 <h2>Makale Listesi</h2>
+
 {% if articles %}
 <ul>
   {% for article in articles %}
@@ -20,5 +23,7 @@
   {% endfor %}
 </ul>
 {% else %}
+
 <p>Henüz makale eklenmemiş.</p>
+
 {% endif %} {% endblock body %}

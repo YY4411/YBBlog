@@ -135,8 +135,13 @@ def login():
 # Detay Sayfası
 @app.route("/article/<int:id>")
 def article(id):
-    article = Article.query.get_or_404(id)
-    return render_template("article.html", article=article)
+    article = Article.query.get(id)
+    if article:
+        return render_template("article.html", article=article)
+    else:
+        flash("Böyle bir makale bulunmuyor...", "warning")
+        return render_template("article.html", article=None)
+
 
 #Logout İşlemi
 @app.route("/logout")

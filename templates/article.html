@@ -1,10 +1,17 @@
-{% extends "layout.html" %} {% block body %}
-<h3>{{ article.title }}</h3>
+{% extends "layout.html" %}
+
+{% block body %}
+
+{% if article %}
+
+<h4>{{article.title}}</h4>
 <hr />
-<p>{{ article.content }}</p>
-<small>Yazar: {{ article.author }}</small><br />
-<small
-  >Oluşturulma Tarihi: {{ article.created_at.strftime('%Y-%m-%d %H:%M:%S')
-  }}</small
->
+Yazar : {{article.author}}
+<hr />
+Tarih : {{article.created_date}}
+<hr />
+{{article.content|safe}} {% else %}
+
+{% endif %}
+
 {% endblock body %}
