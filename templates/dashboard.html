@@ -6,20 +6,32 @@
 <small>Hoşgeldin, {{session["username"]}}</small>
 <hr />
 <a href="/addarticle" class="btn btn-danger">Makale Ekle</a>
-
+<br>
+<br>
 <h2>Makale Listesi</h2>
 
 {% if articles %}
-<ul>
-  {% for article in articles %}
-  <li>
-    <a href="{{ url_for('article', id=article.id) }}">{{ article.title }}</a> -
-    {{ article.content }} <br />
-    <small
-      >Oluşturulma Tarihi: {{ article.created_at.strftime('%Y-%m-%d %H:%M:%S')
-      }}</small
-    >
-  </li>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">id</th>
+      <th scope="col">Başlık</th>
+      <th scope="col">Yazar</th>
+      <th scope="col">Tarih</th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for article in articles %}
+    <tr>
+      <th scope="row">{{article.id}}</th>
+      <td><a href="/article/{{article.id}}">{{article.title}}</a></td>
+      <td>{{article.author}}</td>
+      <td>{{article.created_date}}</td>
+      <td><a href="/edit/{{article.id}}" class = "btn btn-danger">Güncelle</a></td>
+      <td><a href="/delete/{{article.id}}" class = "btn btn-danger">Sil</a></td>
+    </tr>
   {% endfor %}
 </ul>
 {% else %}

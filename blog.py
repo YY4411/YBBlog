@@ -6,7 +6,7 @@ import psycopg2
 from functools import wraps
 from datetime import datetime
 
-#Kullanıcı Giriş Decorator'ı
+# Kullanıcı Giriş Decorator'ı
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -69,7 +69,8 @@ def index():
 @app.route("/about")
 def about():
     return render_template("about.html")
-#Makale Sayfası
+
+# Makale Sayfası
 @app.route("/articles")
 def articles():
     try:
@@ -82,7 +83,8 @@ def articles():
     except Exception as e:
         flash(f"Veritabanı hatası: {str(e)}", "danger")
         return render_template("articles.html")
-#Dashboard
+
+# Dashboard
 @app.route("/dashboard")
 @login_required
 def dashboard():
@@ -94,6 +96,41 @@ def dashboard():
         flash(f"Veritabanı hatası: {str(e)}", "danger")
         return render_template("dashboard.html")
 
+# Makale Güncelleme
+@app.route("/edit/<int:id>", methods=["GET", "POST"])
+@login_required
+def edit(id):
+    article = Article.query.get(id)
+    if article is None or article.author != session["username"]:
+        flash("Böyle bir makale bulunmuyor veya güncelleme yetkiniz yok.", "danger")
+        return redirect(url_for("login"))
+
+    form = ArticleForm(request.form)
+    if request.method == "POST" and form.validate():
+        article.title = form.title.data
+        article.content = form.content.data
+        db.session.commit()
+        flash("Makale Başarıyla Güncellendi...", "success")
+        return redirect(url_for("dashboard"))
+
+    form.title.data = article.title
+    form.content.data = article.content
+    return render_template("edit.html", form=form)
+
+# Makale Silme
+@app.route("/delete/<int:id>")
+@login_required
+def delete(id):
+    article = Article.query.get(id)
+    if article and article.author == session["username"]:
+        db.session.delete(article)
+        db.session.commit()
+        flash("Makale başarıyla silindi.", "success")
+    else:
+        flash("Böyle bir makale bulunmuyor veya silme yetkiniz yok.", "danger")
+        return redirect(url_for("index"))
+    return redirect(url_for("dashboard"))
+    
 #Kayıt Olma
 @app.route("/register",methods = ["GET","POST"])
 def register():
@@ -112,6 +149,7 @@ def register():
         flash("Başarıyla Kayıt Oldunuz...", "success")
         return redirect(url_for("login"))
     return render_template("register.html", form=form)
+
 # Login İşlemi
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -142,13 +180,13 @@ def article(id):
         flash("Böyle bir makale bulunmuyor...", "warning")
         return render_template("article.html", article=None)
 
-
-#Logout İşlemi
+# Logout İşlemi
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("index"))
 
+# Makale Ekleme
 @app.route("/addarticle",methods = ["GET","POST"])
 @login_required
 def addarticle():
@@ -166,7 +204,7 @@ def addarticle():
         return redirect(url_for("dashboard"))
     return render_template("addarticle.html", form=form)
 
-#Makale Form
+# Makale Form
 class ArticleForm(Form):
     title = StringField("Makale Başlığı",validators=[validators.Length(min = 5,max = 100)])
     content = TextAreaField("Makale İçeriği",validators=[validators.Length(min = 10)])
