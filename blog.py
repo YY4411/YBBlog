@@ -209,6 +209,19 @@ class ArticleForm(Form):
     title = StringField("Makale Başlığı",validators=[validators.Length(min = 5,max = 100)])
     content = TextAreaField("Makale İçeriği",validators=[validators.Length(min = 10)])
 
+# Arama URL
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    if request.method == "GET":
+        return redirect(url_for("index"))
+    keyword = request.form.get("keyword")
+    articles = Article.query.filter(Article.title.contains(keyword)).all()
+    if not articles:
+        message = "Aranan kelimeye uygun makale bulunmadı..."
+        return render_template("articles.html", articles=articles, message=message)
+    return render_template("articles.html", articles=articles)
+
+
 if __name__ == "__main__":
     db.create_all()  # Create all tables
     app.run(debug=True)
