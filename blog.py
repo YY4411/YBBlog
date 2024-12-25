@@ -217,7 +217,7 @@ def search():
     keyword = request.form.get("keyword")
     articles = Article.query.filter(Article.title.contains(keyword)).all()
     if not articles:
-        message = "Aranan kelimeye uygun makale bulunmadı..."
+        message = "Aranan kelimeye uygun makale bulunamadı..."
         return render_template("articles.html", articles=articles, message=message)
     return render_template("articles.html", articles=articles)
 

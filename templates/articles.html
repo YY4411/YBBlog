@@ -5,31 +5,28 @@
 <h3>Makaleler</h3>
 <hr />
 
-{% if articles %}
+{% if message %}
+  <div class="alert alert-warning">{{ message }}</div>
+{% endif %}
 
-<form action="/search" method = "post">
-  <input type="text" name = "keyword" class="input-sm" maxlength="64" placeholder="Ara...">
-<button type="submit" class="btn btn-danger">Ara</button>
+<form action="/search" method="post">
+  <input type="text" name="keyword" class="input-sm" maxlength="64" placeholder="Ara...">
+  <button type="submit" class="btn btn-danger">Ara</button>
 </form>
 <hr>
 
-<ul class="list-group">
-  {% for article in articles %}
-  <li class="list-group-item">
-    <a href="{{ url_for('article', id=article.id) }}">{{ article.title }}</a>
-    <br />
-    <small
-      >Oluşturulma Tarihi: {{ article.created_at.strftime('%Y-%m-%d %H:%M:%S')
-      }}</small
-    >
-  </li>
-  {% endfor %}
-</ul>
-
-{% else %}
-
-<div class="alert alert-danger">Bu blokta henüz makale bulunmuyor...</div>
-
+{% if articles %}
+  <ul class="list-group">
+    {% for article in articles %}
+      <li class="list-group-item">
+        <a href="{{ url_for('article', id=article.id) }}">{{ article.title }}</a>
+        <br />
+        <small>Oluşturulma Tarihi: {{ article.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+      </li>
+    {% endfor %}
+  </ul>
+{% elif not message %}
+  <div class="alert alert-danger">Bu blokta henüz makale bulunmuyor...</div>
 {% endif %}
 
 {% endblock body %}
